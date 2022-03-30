@@ -1,0 +1,41 @@
+---
+title: "Homework0"
+author: "Kevin Jin"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.align = 'center')
+```
+
+# Problem 1
+
+The minimum value is 2 feet and the maximum value is 120 feet. The mean is 42.98 feet...
+
+```{r}
+# This is a code chunk. Only code goes here. This is a comment, which will not 
+# be seen as code by R.
+
+data(cars)
+summary(cars$dist)
+```
+
+# Problem 2
+
+The mean speed is 15.4 miles per hour. 
+
+```{r}
+mean(cars$speed)
+```
+
+\newpage
+
+# Problem 3
+
+This is a histogram of the distance variable.
+
+```{r, out.width = "60%", out.height = "80%"}
+hist(cars$dist, 
+     main = "Histogram of Distance", 
+     xlab = "Distance")
+```

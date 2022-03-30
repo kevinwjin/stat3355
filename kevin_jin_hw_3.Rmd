@@ -1,0 +1,187 @@
+---
+title: "Homework 3"
+author: "Kevin Jin"
+date: "3/4/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width=12, fig.height=8)
+```
+
+# Problem 1
+## Part (a)
+```{r}
+# Load data
+library(ggplot2, warn.conflicts = FALSE)
+library(dplyr, warn.conflicts = FALSE)
+data("mpg")
+# Convert cyl variable from int into ordered factor
+mpg$cyl <- factor(mpg$cyl,
+                  ordered = TRUE,
+                  levels = c("4", "5", "6", "8"))
+```
+## Part (b)
+```{r}
+# Convert trans variable from chr into factor
+mpg$trans <- substr(mpg$trans, start = 1, stop = 4)
+mpg$trans <- factor(mpg$trans,
+                    levels = c("auto", "manu"))
+```
+## Part (c)
+```{r}
+# Convert drv variable from chr into ordered factor
+mpg$drv <- factor(mpg$drv,
+                  ordered = TRUE,
+                  levels = c("f", "r", "4"))
+```
+## Part (d)
+```{r}
+# Convert fl variable from chr into factor
+mpg$fl[which(mpg$fl == "p" | mpg$fl == "r")] <- "gasoline"
+mpg$fl[which(mpg$fl == "d")] <- "diesel"
+mpg$fl[which(mpg$fl == "e" | mpg$fl == "c")] <- "other"
+mpg$fl <- factor(mpg$fl,
+                 levels = c("diesel", "gasoline", "other"))
+```
+## Part (e)
+```{r}
+# Convert class variable from chr into ordered factor
+mpg$class <- factor(mpg$class,
+                    ordered = TRUE,
+                    levels = c("2seater", "subcompact", "compact", 
+                                "midsize", "suv", "minivan", "pickup"))
+```
+## Part (f)
+```{r}
+# Create new country variable with manufacturer base location
+mpg <- mutate(mpg, country = NA)
+for (row in 1:nrow(mpg)) {
+  if (mpg$manufacturer[row] == "audi" | 
+        mpg$manufacturer[row] == "volkswagen") {
+    mpg$country[row] <- "germany"
+  } else if (mpg$manufacturer[row] == "hyundai") {
+    mpg$country[row] <- "south korea"
+  } else if (mpg$manufacturer[row] == "land rover") {
+    mpg$country[row] <- "great britain"
+  } else if (mpg$manufacturer[row] == "honda" | 
+             mpg$manufacturer[row] == "nissan" | 
+             mpg$manufacturer[row] == "subaru" | 
+             mpg$manufacturer[row] == "toyota") {
+    mpg$country[row] <- "japan"
+  } else {
+    mpg$country[row] <- "united states"
+  }
+}
+# Check object structure
+str(mpg)
+```
+
+# Problem 2
+## Part (a)
+```{r}
+# Draw barplot of country variable and arrange in decreasing order
+barplot(sort(table(mpg$country), decreasing = TRUE),
+        main = "Frequency of Vehicle Manufacturers by Country (1999-2008)",
+        xlab = "Country",
+        ylab = "Cars",
+        names.arg = c("United States", "Japan", "Germany", 
+                      "South Korea", "Great Britain"),
+        col = 2,
+        cex.main = 1.8,
+        cex.lab = 1.5,
+        cex.names = 1.5,
+        cex.axis = 1.5)
+```
+
+The most common country in this dataset is the United States, and the least
+common is Great Britain.
+
+## Part (b)
+```{r collapse = TRUE}
+# Summarize typical US car
+names(which.max(table(mpg$displ))) # Engine displacement (liters)
+names(which.max(table(mpg$cyl))) # Number of cylinders
+names(which.max(table(mpg$trans))) # Transmission type
+names(which.max(table(mpg$drv))) # Drive type
+names(which.max(table(mpg$fl))) # Fuel type
+names(which.max(table(mpg$class))) # Car class
+```
+
+| Metric  | Typical US Car |
+| ------ | :----: |
+| Displacement (liters) | 2 |
+| Cylinders | 4 |
+| Transmission | Automatic |
+| Drive Type | Front-Wheel Drive |
+| Fuel Type | Gasoline |
+| Car Class | SUV |
+
+## Part (c)
+```{r}
+# Boxplots of combined mpg of US and Japanese cars
+mpg <- mutate(mpg, value = (cty + hwy) / 2) # Create new mpg variable
+us <- which(mpg$country == "united states") # Extract indices of US
+jp <- which(mpg$country == "japan") # Extract indices of Japan
+boxplot(mpg$value[us], 
+        horizontal = TRUE,
+        main = "Combined MPG of US Cars",
+        xlab = "MPG",
+        col = "turquoise",
+        cex.main = 1.8,
+        cex.lab = 1.5,
+        cex.axis = 1.5) 
+boxplot(mpg$value[jp], 
+        horizontal = TRUE,
+        main = "Combined MPG of Japanese Cars",
+        xlab = "MPG",
+        col = "red",
+        cex.main = 1.8,
+        cex.lab = 1.5,
+        cex.axis = 1.5) 
+```
+
+```{r collapse = TRUE}
+# Numerical summaries of combined mpg of US and Japanese cars
+summary(mpg$value[us])
+IQR(mpg$value[us], na.rm = TRUE)
+sd(mpg$value[us], na.rm = TRUE)
+
+summary(mpg$value[jp])
+IQR(mpg$value[jp], na.rm = TRUE)
+sd(mpg$value[jp], na.rm = TRUE)
+```
+| Metric | MPG of US Cars | MPG of Japanese Cars
+| ------ | :----: | :----: |
+| Mean | 16.64 | 22.66 |
+| Median | 15.50 | 22.50 |
+| Standard Deviation (2 d.p.) | 3.30 | 4.60 |
+| Inter-Quartile Range (2 d.p.) | 4.50 | 7.63 |
+
+## Part (d)
+```{r}
+# Histograms of engine displacement of US and Japanese cars
+hist(mpg$displ[us],
+     main = "Histogram of Engine Displacement of US Cars",
+     xlab = "Displacement",
+     col = "turquoise",
+     xlim = c(1, 7),
+     cex.main = 1.8,
+     cex.lab = 1.5,
+     cex.axis = 1.5
+     )
+hist(mpg$displ[jp],
+     main = "Histogram of Engine Displacement of Japanese Cars",
+     xlab = "Displacement",
+     col = "red",
+     xlim = c(1, 7),
+     cex.main = 1.8,
+     cex.lab = 1.5,
+     cex.axis = 1.5
+     )
+```
+
+| Histogram  | Shape |
+| ------ | :----: |
+| US Cars | Bimodal |
+| Japanese Cars | Left Skewed |

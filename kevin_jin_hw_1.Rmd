@@ -1,0 +1,111 @@
+---
+title: "Homework 1"
+author: "Kevin Jin"
+date: "02/04/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Problem 1
+Find the numeric answers of the following mathematical expressions (up to 2
+decimal places if the answer is not an integer).
+```{r}
+# (a)
+round(6 + 5 - 4 / (3) ^ 2, 2)
+
+# (b)
+round(exp(sqrt((14 + 13) / (12 + 11))), 2)
+
+# (c)
+round(((11 + factorial(12)) / (factorial(13) + 14)), 2)
+```
+
+# Problem 2
+The monthly sales figures of Hummer H2 vehicles in the U.S. during 2002 were 
+2700, 2600, 3050, 2900, 3000, 2500, 2600, 3000, 2800, 3200, 2800, 3400. 
+Please answer the following questions.
+```{r}
+# (a) Enter this data into a data vector called H2
+H2 <- c(2700, 2600, 3050, 2900, 3000, 2500, 2600, 3000, 2800, 3200, 2800, 3400)
+
+# (b) Name the data vector with the month abbreviation
+names(H2) <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", 
+               "Oct", "Nov", "Dec")
+# (c) What is the total number of Hummer H2 sold in 2002?
+sum(H2)
+
+# (d) Using diff(), find the month with the greatest increase from the previous month, and the month with the greatest decrease from the previous month
+diff(H2)
+print("Greatest increase: December")
+print("Greatest decrease: June")
+```
+
+# Problem 3
+Rewrite each code block to comply with the “Homework and Project Code 
+Style Guide”.
+```{r}
+x <- c(1, -2, 3, -4, 5, 100)
+y <- x * -1
+y[y > 0]
+```
+
+```{r}
+# create a sequence from 1 to 50
+z <- seq(1, 50)
+
+# test whether an observation is even
+even <- z %% 2 == 0
+
+# subset z by the test above
+z <- z[even]
+```
+
+```{r}
+mean <- function(x) {
+  sum(x) / length(x)
+}
+```
+
+# Problem 4
+A twin prime is a prime that has a prime gap of two. Sometimes the term 
+twin prime is used for a pair of twin primes. For example, the five twin prime 
+pairs are (3, 5), (5, 7), (11, 13), (17, 19) and (29, 31). Write a function 
+that returns the number of all twin prime pairs between 1 and a given number n.
+```{r}
+twin_primes <- function(n) {
+  # vector to hold all numbers between 2 and n
+  num <- 2:n 
+  # logical vector for num to identify primes
+  is_prime <- rep(TRUE, length(num)) 
+  if (n <= 2) {
+    stop("No twin primes between 1-2. Please enter a number greater than 2.")
+  } else {
+    for (i in 2:length(num)) {
+      for (j in 2:(i - 1)) { 
+        # skip 3, a special case that breaks the loop
+        if (num[i] == 3) { 
+          next
+        } else if (num[i] %% j == 0) {
+          is_prime[i] <- FALSE 
+          next
+        }
+      }
+    }
+  }
+  # create vector with all primes between 2 and n
+  primes <- rep(num[is_prime])  
+  # counter to track number of twin primes
+  count <- 0
+  # iterate through primes vector, stopping 1 before the end due to indexing
+  for (k in 1:(length(primes)-1)) {
+    # if the current entry is 2 less than the next entry, they are twin primes
+    if (primes[k + 1] - primes[k] == 2) {
+      count = count + 1
+    }
+  }
+  return(count)
+}
+```
