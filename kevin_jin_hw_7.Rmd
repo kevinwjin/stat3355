@@ -1,0 +1,61 @@
+---
+title: "Homework 7"
+author: "Kevin Jin"
+date: "4/13/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Problem 1
+```{r}
+# Calculate sample mean and standard deviation of the sample mean
+x <- 180 
+n <- 15; total <- 3500
+sigma <- 25
+# P(X >= x)
+pnorm(total, mean = x * n, sd = sqrt(n) * sigma, lower.tail = FALSE)
+```
+
+The probability of a sample of 15 people exceeding 3,500 pounds total is close
+to zero at $7.1 * 10^{-17}$; it would be extremely unlikely and near impossible.
+
+## Problem 2
+```{r}
+# Calculate parameters
+n <- 30; total <- 600
+lambda <- 25 # mean and variance
+sd <- sqrt(lambda)
+# P(X >= x)
+pnorm(total, mean = lambda * n, sd = sqrt(n) * sd, lower.tail = FALSE)
+```
+
+The probability of selling more than 600 bottles in the next 30 days is 1 or 
+very close to 1; it is essentially certain.
+
+## Problem 3
+```{r}
+prop.test(x = 2, n = 30)
+```
+
+We are 95% confident that the true proportion of left-handed students is 
+between 1.16% and 23.5%; therefore, the 95% confidence interval does contain
+the actual value of 13.1%.
+
+## Problem 4
+```{r}
+library(UsingR)
+data(babies)
+t.test(babies$age, babies$dage, paired = TRUE)
+```
+
+The 95% confidence interval does not contain 0; therefore, we conclude that 0 
+is not a reasonable value for the true difference in mean mother's age and 
+mean father's age.
+
+For the paired t-test to work, we assume that the response variables (in this
+case, the age) are continuous, that both sets of observations are independent
+of each other, that both sets of observations follow a normal distribution, 
+and that they do not contain outliers.
